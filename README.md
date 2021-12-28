@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/lizmat/Updown-API/workflows/test/badge.svg)](https://github.com/lizmat/Updown-API/actions)
+
 NAME
 ====
 
