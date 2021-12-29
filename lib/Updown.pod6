@@ -1,0 +1,502 @@
+=begin pod
+
+=head1 NAME
+
+Updown - provide basic API to Updown.io
+
+=head1 SYNOPSIS
+
+=begin code :lang<raku>
+
+use Updown;
+
+my $ud = Updown.new;  # assume API key in UPDOWN_API_KEY
+
+my $ud = Updown.new(api-key => "secret-api-key");
+
+for $ud.checks -> (:key($check-id), :value($check)) {
+    say "$check.apdex_t() $check.url()"
+}
+
+=end code
+
+=head1 DESCRIPTION
+
+Updown provides a simple object-oriented interface to the API as provided
+by L<Updown.io>, a website monitoring service.
+
+Access to functionality is provided through the C<Updown> class, which has
+methods that perform the various functions and return objects in the
+C<Updown::> hierarchy of classes.
+
+The L<Updown API|https://updown.io/api> is basically followed to the letter,
+with a little caching and some minor functional sugar added.
+
+To be consistent with the names used in the API, all identifiers use
+underscores (snake_case) in their names, rather then hyphens (kebab-case).
+
+=head1 MAIN CLASS
+
+=head2 Updown
+
+The C<Updown> object connects the code with all of the monitoring that
+has been configured for a user of the L<Updown|https://updown.io> service.
+
+=head3 Parameters
+
+The following parameters can be specified when creating the C<Updown> object:
+
+=head4 client
+
+A C<Cro::HTTP::Client> object that will be used to access the API of C<Updown>.
+Defaults to a default C<Cro::HTTP::Client> object.
+
+=head4 api-key
+
+The API key that should be used to authenticate requests with the C<Updown>
+API.  Defaults to the C<UPDOWN_API_KEY> environment variable.
+
+Any API key (implicitely) specified will be added to the headers of the
+C<client> object used to facilitate authentication.
+
+=head3 Methods
+
+The following methods are available on the C<Updown> object:
+
+=head4 checks
+
+Returns a C<Hash> with C<Updown::Check> objects, keyed to their "check_id".
+Takes an optional named boolean argument C<:update> to indicate that
+the information should be refreshed if it was already obtained before.
+
+=head4 check_ids
+
+Returns a list of "check_id"s of the C<Updown::Check>s that are being
+performed for the user associated with the given API key.  Takes an
+optional named boolean argument C<:update> to indicate that the information
+should be refreshed if it was already obtained before.
+
+=head4 check
+
+Return the C<Updown::Check> object associated with the given "check_id".
+Takes an optional named boolean argument C<:update> to indicate that
+the information should be refreshed if it was already obtained before.
+
+=head4 downtimes
+
+Returns a list of up to 100 C<Node::Downtime> objects for the given "check_id".
+Takes an optional C<:page> argument to indicate the "page": defaults to C<1>.
+
+=head4 overall_metrics
+
+Returns a C<Updown::Metric> object for the given "check_id".  Optionally
+takes two named arguments.
+
+C<:from>, a C<DateTime> object indicating the B<start> of the period for
+which to provide overall metrics.  Defaults to C<DateTime.now.earlier(:1month)>.
+
+C<:to>, a C<DateTime> object indicating the B<end> of the period for which
+to provide overal metrics.  Defaults to C<DateTime.now>.
+
+=head4 hourly_metrics
+
+Returns an object C<Hash> of C<Updown::Metrics> objects for the given
+"check_id" about overall metrics per hour, keyed to C<DateTime> objects
+indicating the hour.  Optionally takes two named arguments.
+
+C<:from>, a C<DateTime> object indicating the B<start> of the period for
+which to provide overall metrics.  Defaults to C<DateTime.now.earlier(:1month)>.
+
+C<:to>, a C<DateTime> object indicating the B<end> of the period for which
+to provide overal metrics.  Defaults to C<DateTime.now>.
+
+=head4 node_metrics
+
+Returns a C<Hash> of C<Updown::Metrics> objects for the given "check_id" about
+overall metrics per monitoring server in the C<Updown> network, keyed to
+"node_id".  Optionally takes two named arguments.
+
+C<:from>, a C<DateTime> object indicating the B<start> of the period for
+which to provide overall metrics.  Defaults to C<DateTime.now.earlier(:1month)>.
+
+C<:to>, a C<DateTime> object indicating the B<end> of the period for which
+to provide overal metrics.  Defaults to C<DateTime.now>.
+
+=head4 nodes
+
+Returns a C<Hash> with C<Updown::Node> objects, keyed to their "node_id".
+Takes an optional named boolean argument C<:update> to indicate that
+the information should be refreshed if it was already obtained before.
+
+=head4 node_ids
+
+Returns a list of "node_id"s of the monitoring servers of the C<Updown>
+network.  Takes an optional named boolean argument C<:update> to indicate
+that the information should be refreshed if it was already obtained before.
+
+=head4 node
+
+Return the C<Updown::Node> object associated with the given "node_id".
+Takes an optional named boolean argument C<:update> to indicate that
+the information should be refreshed if it was already obtained before.
+
+=head4 ipv4-nodes
+
+Returns a list of strings with the IPv4 numbers of the nodes in the C<Updown>
+network that are executing the monitoring checks.  Takes an optional named
+boolean argument C<:update> to indicate that the information should be
+refreshed if it was already obtained before.
+
+=head4 ipv6-nodes
+
+Returns a list of strings with the IPv6 numbers of the nodes in the C<Updown>
+network that are executing the monitoring checks.  Takes an optional named
+boolean argument C<:update> to indicate that the information should be
+refreshed if it was already obtained before.
+
+=head1 AUTOMATICALLY CREATED CLASSES
+
+=head2 Updown::Check
+
+An object containing the configuration of the monitoring that C<Updown> does
+for a given website.
+
+=head3 disabled_locations
+
+An array of monitoring locations that have been disabled, indicated by
+C<node_id>.
+
+=head3 alias
+
+A string that describes the check, usually a human readable name of the
+website being monitored.
+
+=head3 apdex_t
+
+A rational number indicating the L<APDEX|https://updown.uservoice.com/knowledgebase/articles/915588> threshold.
+
+=head3 custom_headers
+
+A hash of custom headers that will be sent to the monitored website.
+
+=head3 down
+
+A boolean that will be true if the website is currently considered to be down.
+
+=head3 down_since
+
+A C<DateTime> object indicating when it was first discovered that the website
+was down, if down.  Else, C<Any>.
+
+=head3 enabled
+
+A boolean indicating whether the monitoring is currently active.
+
+=head3 error
+
+A string containing the error that was encountered if the website is considered
+down.
+
+=head3 favicon_url
+
+The URL of the favicon small icon representing the website, if any.
+
+=head3 http_body
+
+Unclear what the functionality is.
+
+=head3 http_verb
+
+A string describing the HTTP method that will be used to monitor the website.
+Is one of "GET/HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS".
+
+=head3 last_check_at
+
+A C<DateTime> object indicating when the last check was done.
+
+=head3 last_status
+
+An integer indicating the last HTTP status that was received.
+
+=head3 mute_until
+
+A string indicating until when notifications will be muted.  Is either a
+string consisting of "recovery", "forever", or a C<DateTime> object indicating
+until when notifications will be muted, or C<Any> if no muting is in effect.
+
+=head3 next_check_at
+
+A C<DateTime> object indicating when the next monitoring check will be
+performed.
+
+=head3 period
+
+An integer indicating the number of seconds between monitoring checks.
+
+=head3 published
+
+A boolean indicating whether the monitoring page is publicly accessible
+or not.
+
+=head3 ssl
+
+An C<Updown::Check::SSL> object, indicating SSL certificate status of the
+monitored website.
+
+=head3 string_match
+
+A string that should occur in the first 1MB of the body returned by the
+monitored website.  An empty string indicates no content checking is done.
+
+=head3 token
+
+A string indicating the identifier (check-id) of this monitoring check
+configuration.
+
+=head3 uptime
+
+A rational number between 0 and 100 indicating the percentage uptime of
+the monitored website.
+
+=head3 url
+
+A string consisting of the URL that will be fetched to assess whether the
+monitored website is up and running.
+
+=head2 Updown::Check::SSL
+
+This object generally occurs as the C<ssl> method in the C<Updown::Check>
+object.
+
+=head3 tested_at
+
+A C<DateTime> object indicating when the certificate of the monitored
+website was checked.
+
+=head3 expires_at
+
+A C<DateTime> object indicating when the certificate of the monitored
+website will expire.
+
+=head3 valid
+
+A boolean indicating whether the certificate of the monitored website was
+valid the last time it was checked.
+
+=head3 error
+
+A string indicating the error encountered when checking the validity of
+the certificate of the monitored server, if any.
+
+=head2 Updown::Downtime
+
+An object describing a downtime period as seen by at least one of the
+monitoring servers in the C<Updown> network.
+
+=head3 duration
+
+An integer indicating the number of seconds of downtime.
+
+=head3 ended_at
+
+A C<DateTime> object indicating the moment the downtime appeared to have
+ended.
+
+=head3 error
+
+A string describing the reason the website appeared to be down.
+
+=head3 id
+
+A string identifying this particular downtime.
+
+=head3 partial
+
+A boolean indicating whether the downtime was partial or complete (e.g.
+not being reachable by IPv6, but operating normally with IPv4).
+
+=head3 started_at
+
+A C<DateTime> object indicating the moment the downtime appeared to have
+started.
+
+=head2 Updown::Metrics
+
+A collection of statistical data applicable for the current situation, or
+for a certain period, or for a certain C<Updown::Node>.
+
+=head3 apdex
+
+A rational number indicating the current L<APDEX|https://updown.uservoice.com/knowledgebase/articles/915588> for this set of metrics.
+
+=head3 requests
+
+The associated C<Updown::Metrics::Requests> object.
+
+=head3 timings
+
+The associated C<Updown::Metrics::Timings> object.
+
+=head2 Updown::Metrics::Requests
+
+This object is usually returned by the "requests" method of the
+C<Updown::Metrics> object.
+
+=head3 by_response_time
+
+The associated C<Updown::Metrics::Timings::ByResponseTime> object.
+
+=head3 failures
+
+An integer indicating the number of monitoring requests that failed.
+
+=head3 samples
+
+An integer indicating the number of monitoring requests that were done.
+
+=head3 satisfied
+
+An integer indicating the number of monitoring requests that were processed
+to the user's L<APDEX|https://updown.uservoice.com/knowledgebase/articles/915588>
+satisfaction.
+
+=head3 tolerated
+
+An integer indicating the number of monitoring requests that were processed
+to the user's L<APDEX|https://updown.uservoice.com/knowledgebase/articles/915588> tolerance.
+
+=head2 Updown::Metrics::Requests::ByResponseTime
+
+This object is usually returned by the "by_response_time" method of the
+C<Updown::Metrics::Request> object.
+
+=head under125
+
+An integer indicating the number of monitoring requests that were processed
+under 125 milliseconds.
+
+=head under250
+
+An integer indicating the number of monitoring requests that were processed
+under 250 milliseconds.
+
+=head under500
+
+An integer indicating the number of monitoring requests that were processed
+under 500 milliseconds.
+
+=head under1000
+
+An integer indicating the number of monitoring requests that were processed
+under 1 second.
+
+=head under2000
+
+An integer indicating the number of monitoring requests that were processed
+under 2 seconds.
+
+=head under4000
+
+An integer indicating the number of monitoring requests that were processed
+under 4 seconds.
+
+=head2 Updown::Metrics::Timings
+
+This object is usually returned by the "timings" method of the
+C<Updown::Metrics> object.
+
+=head3 connection
+
+An integer indicating the average number of milliseconds it took to set
+up a connection with the monitored website.
+
+=head3 handshake
+
+An integer indicating the average number of milliseconds it took to do the 
+TLS handshake with the monitored website.
+
+=head3 namelookup
+
+An integer indicating the average number of milliseconds it took to look up
+the name of the monitored website.
+
+=head3 redirect
+
+An integer indicating the average number of milliseconds it took to process
+any redirect that the monitored website did.  Any value greater than 0 probably
+indicates a misconfigured URL of the monitored website.
+
+=head3 response
+
+An integer indicating the average number of milliseconds it took for the
+monitored website to initiate a response.
+
+=head3 total
+
+An integer indicating the average number of milliseconds it took for the
+monitored website to complete the monitoring request.
+
+=head2 Updown::Node
+
+An object containing information about a monitoring node in the C<Updown>
+network.
+
+=head3 city
+
+A string with the name of the city where the monitoring node is located.
+
+=head3 country
+
+A string with the name of the country where the monitoring node is located.
+
+=head3 country_code
+
+A string with the 2-letter code of the country where the monitoring node is
+located.
+
+=head3 ip
+
+A string indicating the IPv4 number of the monitoring node.
+
+=head3 ip6
+
+A string indicating the IPv6 number of the monitoring node.
+
+=head3 lat
+
+A rational number indicating the latitude of the monitoring node.
+
+=head3 lng
+
+A rational number indicating the longitude of the monitoring node.
+
+=head3 node_id
+
+A string indicating the ID with which the monitoring node can be indicated.
+
+=head2 Updown::Webhook
+
+=head3 id
+
+A string identifying this webhook.
+
+=head3 url
+
+A string with the URL to which any notifications should be sent.
+
+=head1 AUTHOR
+
+Elizabeth Mattijsen <liz@raku.rocks>
+
+Source can be located at: https://github.com/lizmat/Updown . Comments and
+Pull Requests are welcome.
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2021 Elizabeth Mattijsen
+
+This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+
+=end pod
+
+# vim: expandtab shiftwidth=4
