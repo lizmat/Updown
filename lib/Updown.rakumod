@@ -219,19 +219,22 @@ class Updown:ver<0.0.1>:auth<zef:lizmat> {
 
 =head1 NAME
 
-Updown::API - provide basic API to Updown.io
+Updown - provide basic API to Updown.io
 
 =head1 SYNOPSIS
 
 =begin code :lang<raku>
 
-use Updown::API;
+use Updown;
+
+my $ud = Updown.new;
+
 
 =end code
 
 =head1 DESCRIPTION
 
-Updown::API provides a simple object-oriented interface to the API as provided
+Updown provides a simple object-oriented interface to the API as provided
 by L<Updown.io>.
 
 =head1 AUTHOR

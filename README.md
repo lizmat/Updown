@@ -1,21 +1,23 @@
-[![Actions Status](https://github.com/lizmat/Updown-API/workflows/test/badge.svg)](https://github.com/lizmat/Updown-API/actions)
+[![Actions Status](https://github.com/lizmat/Updown/workflows/test/badge.svg)](https://github.com/lizmat/Updown/actions)
 
 NAME
 ====
 
-Updown::API - provide basic API to Updown.io
+Updown - provide basic API to Updown.io
 
 SYNOPSIS
 ========
 
 ```raku
-use Updown::API;
+use Updown;
+
+my $ud = Updown.new;
 ```
 
 DESCRIPTION
 ===========
 
-Updown::API provides a simple object-oriented interface to the API as provided by [Updown.io](Updown.io).
+Updown provides a simple object-oriented interface to the API as provided by [Updown.io](Updown.io).
 
 AUTHOR
 ======

@@ -11,10 +11,10 @@
   ],
   "description": "provide basic API to Updown.io",
   "license": "Artistic-2.0",
-  "name": "Updown::API",
+  "name": "Updown",
   "perl": "6.d",
   "provides": {
-    "Updown::API": "lib/Updown/API.rakumod"
+    "Updown": "lib/Updown.rakumod"
   },
   "resources": [
   ],

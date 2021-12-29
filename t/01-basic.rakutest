@@ -1,5 +1,5 @@
 use Test;
-use Updown::API;
+use Updown;
 
 pass "replace me";
 
