@@ -18,6 +18,8 @@ my $ud = Updown.new(api-key => "secret-api-key");
 for $ud.checks -> (:key($check-id), :value($check)) {
     say "$check.apdex_t() $check.url()"
 }
+
+my $event = Updown::Event(%hash);  # inside a webhook
 ```
 
 DESCRIPTION
@@ -31,13 +33,13 @@ The [Updown API](https://updown.io/api) is basically followed to the letter, wit
 
 To be consistent with the names used in the API, all identifiers use underscores (snake_case) in their names, rather then hyphens (kebab-case).
 
-MAIN CLASS
-==========
+MAIN CLASSES
+============
 
 Updown
 ------
 
-The `Updown` object connects the code with all of the monitoring that has been configured for a user of the [Updown](https://updown.io) service.
+The `Updown` object connects the code with all of the monitoring that has been configured for a user of the [Updown.io](https://updown.io) service.
 
 ### Parameters
 
@@ -91,7 +93,7 @@ Returns an object `Hash` of `Updown::Metrics` objects for the given "check_id" a
 
 #### node_metrics
 
-Returns a `Hash` of `Updown::Metrics` objects for the given "check_id" about overall metrics per monitoring server in the `Updown` network, keyed to "node_id". Optionally takes two named arguments.
+Returns a `Hash` of `Updown::Metrics` objects for the given "check_id" about overall metrics per monitoring server in the `Updown.io` network, keyed to "node_id". Optionally takes two named arguments.
 
 `:from`, a `DateTime` object indicating the **start** of the period for which to provide overall metrics. Defaults to `DateTime.now.earlier(:1month)`.
 
@@ -103,7 +105,7 @@ Returns a `Hash` with `Updown::Node` objects, keyed to their "node_id". Takes an
 
 #### node_ids
 
-Returns a list of "node_id"s of the monitoring servers of the `Updown` network. Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
+Returns a list of "node_id"s of the monitoring servers of the `Updown.io` network. Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
 
 #### node
 
@@ -111,11 +113,28 @@ Return the `Updown::Node` object associated with the given "node_id". Takes an o
 
 #### ipv4-nodes
 
-Returns a list of strings with the IPv4 numbers of the nodes in the `Updown` network that are executing the monitoring checks. Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
+Returns a list of strings with the IPv4 numbers of the nodes in the `Updown.io` network that are executing the monitoring checks. Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
 
 #### ipv6-nodes
 
-Returns a list of strings with the IPv6 numbers of the nodes in the `Updown` network that are executing the monitoring checks. Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
+Returns a list of strings with the IPv6 numbers of the nodes in the `Updown.io` network that are executing the monitoring checks. Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
+
+Updown::Event
+-------------
+
+Objects of this type are **not** created automatically, but need to be created **directly** with the hash of the JSON received by a server that handles a webhook (so no `Updown` object needs to have been created).
+
+### event
+
+A string indicating the type of event. Can be either "check.down" when a monitored website appears to be down, or "check.up" to indicate that a monitored website has become operational again.
+
+### check
+
+The associated `Updown::Check` object.
+
+### downtime
+
+The associated `Updown::Node` object.
 
 AUTOMATICALLY CREATED CLASSES
 =============================
@@ -123,7 +142,7 @@ AUTOMATICALLY CREATED CLASSES
 Updown::Check
 -------------
 
-An object containing the configuration of the monitoring that `Updown` does for a given website.
+An object containing the configuration of the monitoring that the `Updown.io` network does for a given website.
 
 ### disabled_locations
 
@@ -237,7 +256,7 @@ A string indicating the error encountered when checking the validity of the cert
 Updown::Downtime
 ----------------
 
-An object describing a downtime period as seen by at least one of the monitoring servers in the `Updown` network.
+An object describing a downtime period as seen by at least one of the monitoring servers in the `Updown.io` network.
 
 ### duration
 
@@ -249,7 +268,7 @@ A `DateTime` object indicating the moment the downtime appeared to have ended.
 
 ### error
 
-A string describing the reason the website appeared to be down.
+A string describing the reason the website appeared to be down, e.g. a HTTP status code like "500".
 
 ### id
 
@@ -384,7 +403,7 @@ An integer indicating the average number of milliseconds it took for the monitor
 Updown::Node
 ------------
 
-An object containing information about a monitoring node in the `Updown` network.
+An object containing information about a monitoring node in the `Updown.io` network.
 
 ### city
 
@@ -420,6 +439,8 @@ A string indicating the ID with which the monitoring node can be indicated.
 
 Updown::Webhook
 ---------------
+
+Objects returned by the `webhooks` method of the `Updown` object.
 
 ### id
 

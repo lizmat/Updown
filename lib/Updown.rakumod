@@ -106,6 +106,12 @@ class Updown::Webhook does Hash2Class[
   url => Str,
 ] { }
 
+class Updown::Event does Hash2Class[
+  event    => Str,
+  check    => Updown::Check,
+  downtime => Updown::Downtime,
+] { }
+
 #-------------------------------------------------------------------------------
 # Updown
 
@@ -234,12 +240,3 @@ class Updown:ver<0.0.1>:auth<zef:lizmat> {
 }
 
 # vim: expandtab shiftwidth=4
-
-my $ud = Updown.new;
-
-dd $ud.overall-metrics("g280");
-
-=finish
-for $ud.checks { #.grep(*.key eq 'g280') {
-    say "$_.key(): $_.value.url()";
-}

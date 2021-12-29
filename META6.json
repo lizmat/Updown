@@ -26,6 +26,7 @@
     "UPDOWN"
   ],
   "test-depends": [
+    "JSON::Fast"
   ],
   "version": "0.0.1"
 }

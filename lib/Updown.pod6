@@ -18,6 +18,8 @@ for $ud.checks -> (:key($check-id), :value($check)) {
     say "$check.apdex_t() $check.url()"
 }
 
+my $event = Updown::Event(%hash);  # inside a webhook
+
 =end code
 
 =head1 DESCRIPTION
@@ -35,12 +37,12 @@ with a little caching and some minor functional sugar added.
 To be consistent with the names used in the API, all identifiers use
 underscores (snake_case) in their names, rather then hyphens (kebab-case).
 
-=head1 MAIN CLASS
+=head1 MAIN CLASSES
 
 =head2 Updown
 
 The C<Updown> object connects the code with all of the monitoring that
-has been configured for a user of the L<Updown|https://updown.io> service.
+has been configured for a user of the L<Updown.io|https://updown.io> service.
 
 =head3 Parameters
 
@@ -113,7 +115,7 @@ to provide overal metrics.  Defaults to C<DateTime.now>.
 =head4 node_metrics
 
 Returns a C<Hash> of C<Updown::Metrics> objects for the given "check_id" about
-overall metrics per monitoring server in the C<Updown> network, keyed to
+overall metrics per monitoring server in the C<Updown.io> network, keyed to
 "node_id".  Optionally takes two named arguments.
 
 C<:from>, a C<DateTime> object indicating the B<start> of the period for
@@ -130,7 +132,7 @@ the information should be refreshed if it was already obtained before.
 
 =head4 node_ids
 
-Returns a list of "node_id"s of the monitoring servers of the C<Updown>
+Returns a list of "node_id"s of the monitoring servers of the C<Updown.io>
 network.  Takes an optional named boolean argument C<:update> to indicate
 that the information should be refreshed if it was already obtained before.
 
@@ -142,24 +144,44 @@ the information should be refreshed if it was already obtained before.
 
 =head4 ipv4-nodes
 
-Returns a list of strings with the IPv4 numbers of the nodes in the C<Updown>
+Returns a list of strings with the IPv4 numbers of the nodes in the C<Updown.io>
 network that are executing the monitoring checks.  Takes an optional named
 boolean argument C<:update> to indicate that the information should be
 refreshed if it was already obtained before.
 
 =head4 ipv6-nodes
 
-Returns a list of strings with the IPv6 numbers of the nodes in the C<Updown>
+Returns a list of strings with the IPv6 numbers of the nodes in the C<Updown.io>
 network that are executing the monitoring checks.  Takes an optional named
 boolean argument C<:update> to indicate that the information should be
 refreshed if it was already obtained before.
+
+=head2 Updown::Event
+
+Objects of this type are B<not> created automatically, but need to be created
+B<directly> with the hash of the JSON received by a server that handles a
+webhook (so no C<Updown> object needs to have been created).
+
+=head3 event
+
+A string indicating the type of event.  Can be either "check.down" when a
+monitored website appears to be down, or "check.up" to indicate that a
+monitored website has become operational again.
+
+=head3 check
+
+The associated C<Updown::Check> object.
+
+=head3 downtime
+
+The associated C<Updown::Node> object.
 
 =head1 AUTOMATICALLY CREATED CLASSES
 
 =head2 Updown::Check
 
-An object containing the configuration of the monitoring that C<Updown> does
-for a given website.
+An object containing the configuration of the monitoring that the C<Updown.io>
+network does for a given website.
 
 =head3 disabled_locations
 
@@ -291,7 +313,7 @@ the certificate of the monitored server, if any.
 =head2 Updown::Downtime
 
 An object describing a downtime period as seen by at least one of the
-monitoring servers in the C<Updown> network.
+monitoring servers in the C<Updown.io> network.
 
 =head3 duration
 
@@ -304,7 +326,8 @@ ended.
 
 =head3 error
 
-A string describing the reason the website appeared to be down.
+A string describing the reason the website appeared to be down, e.g. a
+HTTP status code like "500".
 
 =head3 id
 
@@ -438,7 +461,7 @@ monitored website to complete the monitoring request.
 
 =head2 Updown::Node
 
-An object containing information about a monitoring node in the C<Updown>
+An object containing information about a monitoring node in the C<Updown.io>
 network.
 
 =head3 city
@@ -475,6 +498,8 @@ A rational number indicating the longitude of the monitoring node.
 A string indicating the ID with which the monitoring node can be indicated.
 
 =head2 Updown::Webhook
+
+Objects returned by the C<webhooks> method of the C<Updown> object.
 
 =head3 id
 
