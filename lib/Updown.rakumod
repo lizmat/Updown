@@ -1,4 +1,4 @@
-use Hash2Class:ver<0.1.4>:auth<zef:lizmat>;
+use Hash2Class:ver<0.1.5>:auth<zef:lizmat>;
 use Cro::HTTP::Client:ver<0.8.7>;
 
 #-------------------------------------------------------------------------------
@@ -17,11 +17,10 @@ class Updown::Check does Hash2Class[
   apdex_t               => Rat,
   custom_headers        => Hash,
   down                  => Bool,
-  down_since            => Any,
   enabled               => Bool,
   error                 => Any,
   favicon_url           => Any,
-  http_body             => Str,
+  http_body             => Any,
   http_verb             => Str,
   last_check_at         => DateTime(Str),
   last_status           => Int,
@@ -47,16 +46,39 @@ class Updown::Check does Hash2Class[
             Any
         }
     }
+    method down_since() {
+        with $!data<down_since> {
+            .DateTime
+        }
+        else {
+            Any
+        }
+    }
 }
 
 class Updown::Downtime does Hash2Class[
-  duration   => Int,
-  ended_at   => DateTime(Str),
-  error      => Str,
-  id         => Str,
+  error      => Any,
+  id         => Any,
   partial    => Bool,
   started_at => DateTime(Str),
-] { }
+] {
+    method duration() {
+        with $!data<duration> {
+            .Int
+        }
+        else {
+            Any
+        }
+    }
+    method ended_at() {
+        with $!data<ended_at> {
+            .DateTime
+        }
+        else {
+            Any
+        }
+    }
+}
 
 class Updown::Metrics::Timings does Hash2Class[
   connection => Int,

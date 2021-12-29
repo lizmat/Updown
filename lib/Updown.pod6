@@ -317,12 +317,13 @@ monitoring servers in the C<Updown.io> network.
 
 =head3 duration
 
-An integer indicating the number of seconds of downtime.
+An integer indicating the number of seconds of downtime, or C<Any> if the
+downtime is not ended yet.
 
 =head3 ended_at
 
 A C<DateTime> object indicating the moment the downtime appeared to have
-ended.
+ended, or C<Any> if the downtime is not ended yet..
 
 =head3 error
 

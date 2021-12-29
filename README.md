@@ -260,11 +260,11 @@ An object describing a downtime period as seen by at least one of the monitoring
 
 ### duration
 
-An integer indicating the number of seconds of downtime.
+An integer indicating the number of seconds of downtime, or `Any` if the downtime is not ended yet.
 
 ### ended_at
 
-A `DateTime` object indicating the moment the downtime appeared to have ended.
+A `DateTime` object indicating the moment the downtime appeared to have ended, or `Any` if the downtime is not ended yet..
 
 ### error
 

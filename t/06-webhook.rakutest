@@ -1,0 +1,24 @@
+use Test;
+use JSON::Fast;
+use Updown;
+
+plan 3;
+
+my $json := q:to/JSON/;
+{
+  "id": "5c4f5d31ccc9ac4bb838c0c7",
+  "url": "http://example.com"
+}
+JSON
+
+my $webhook := Updown::Webhook.new: from-json $json;
+isa-ok $webhook, Updown::Webhook;
+
+for (
+  "id",  "5c4f5d31ccc9ac4bb838c0c7",
+  "url", "http://example.com",
+) -> $method, $value {
+    is-deeply $webhook."$method"(), $value, "is $method ok";
+}
+
+# vim: expandtab shiftwidth=4

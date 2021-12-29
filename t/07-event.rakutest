@@ -1,0 +1,90 @@
+use Test;
+use JSON::Fast;
+use Updown;
+
+plan 27;
+
+my $json := q:to/JSON/;
+{
+  "event": "check.down",
+  "check": {
+    "token": "ngg8",
+    "url": "https://updown.io",
+    "alias": "",
+    "last_status": 500,
+    "uptime": 100.0,
+    "down": true,
+    "down_since": "2016-02-07T13:11:43Z",
+    "error": "500",
+    "period": 30,
+    "apdex_t": 0.25,
+    "string_match": "",
+    "enabled": true,
+    "published": true,
+    "disabled_locations": [],
+    "last_check_at": "2016-02-07T13:12:13Z",
+    "next_check_at": "2016-02-07T13:12:43Z",
+    "mute_until": null,
+    "favicon_url": "https://updown.io/favicon.png",
+    "custom_headers": {}
+  },
+  "downtime": {
+    "error": "500",
+    "started_at": "2016-02-07T13:11:43Z",
+    "ended_at": null,
+    "duration": null
+  }
+}
+JSON
+
+my $event := Updown::Event.new: from-json $json;
+isa-ok $event, Updown::Event;
+
+for (
+  "event", "check.down",
+) -> $method, $value {
+    is-deeply $event."$method"(), $value, "is $method ok";
+}
+
+my $check := $event.check;
+isa-ok $check, Updown::Check;
+
+for (
+  "token",          "ngg8",
+  "url",            "https://updown.io",
+  "alias",          "",
+  "last_status",    500,
+  "uptime",         100.0,
+  "down",           True,
+  "down_since",     "2016-02-07T13:11:43Z".DateTime,
+  "error",          "500",
+  "period",         30,
+  "apdex_t",        0.25,
+  "string_match",   "",
+  "enabled",        True,
+  "published",      True,
+  "last_check_at",  "2016-02-07T13:12:13Z".DateTime,
+  "next_check_at",  "2016-02-07T13:12:43Z".DateTime,
+  "mute_until",     Any,
+  "favicon_url",    "https://updown.io/favicon.png",
+  "custom_headers", {},
+) -> $method, $value {
+    is-deeply $check."$method"(), $value, "is $method ok on check";
+}
+
+# troublesome test
+is $check.disabled_locations, "", 'is disabled locations ok';
+
+my $downtime := $event.downtime;
+isa-ok $downtime, Updown::Downtime;
+
+for (
+    "error",      "500",
+    "started_at", "2016-02-07T13:11:43Z".DateTime,
+    "ended_at",   Any,
+    "duration",   Any,
+) -> $method, $value {
+    is-deeply $downtime."$method"(), $value, "is $method ok on downtime";
+}
+
+# vim: expandtab shiftwidth=4

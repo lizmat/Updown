@@ -1,8 +1,24 @@
 use Test;
 use Updown;
 
-pass "replace me";
+my @class-names = <
+  Updown
+  Updown::Check
+  Updown::Check::SSL
+  Updown::Downtime
+  Updown::Event
+  Updown::Metrics
+  Updown::Metrics::Requests
+  Updown::Metrics::Requests::ByResponseTime
+  Updown::Metrics::Timings
+  Updown::Node
+  Updown::Webhook
+>;
 
-done-testing;
+plan +@class-names;
+
+for @class-names {
+    nok ::($_) ~~ Failure, "can $_ be found as class";
+}
 
 # vim: expandtab shiftwidth=4

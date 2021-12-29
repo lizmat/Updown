@@ -1,0 +1,32 @@
+use Test;
+use JSON::Fast;
+use Updown;
+
+plan 7;
+
+my $json := q:to/JSON/;
+{
+  "id": "5e47e393c2c1b351a3cedcc1",
+  "error": "Errno::ETIMEDOUT",
+  "started_at": "2020-02-15T12:26:17Z",
+  "ended_at": "2020-02-15T12:28:19Z",
+  "duration": 123,
+  "partial": false
+}
+JSON
+
+my $downtime := Updown::Downtime.new: from-json $json;
+isa-ok $downtime, Updown::Downtime;
+
+for (
+  "id",         "5e47e393c2c1b351a3cedcc1",
+  "error",      "Errno::ETIMEDOUT",
+  "started_at", "2020-02-15T12:26:17Z".DateTime,
+  "ended_at",   "2020-02-15T12:28:19Z".DateTime,
+  "duration",   123,
+  "partial",    False,
+) -> $method, $value {
+    is-deeply $downtime."$method"(), $value, "is $method ok";
+}
+
+# vim: expandtab shiftwidth=4

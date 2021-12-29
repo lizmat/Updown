@@ -1,0 +1,85 @@
+use Test;
+use JSON::Fast;
+use Updown;
+
+plan 21;
+
+my $json := q:to/JSON/;
+{
+  "apdex": 0.999,
+  "requests": {
+    "samples": 87441,
+    "failures": 2,
+    "satisfied": 87357,
+    "tolerated": 77,
+    "by_response_time": {
+      "under125": 70521,
+      "under250": 71126,
+      "under500": 87357,
+      "under1000": 87422,
+      "under2000": 87434,
+      "under4000": 87438
+    }
+  },
+  "timings": {
+    "redirect": 0,
+    "namelookup": 9,
+    "connection": 88,
+    "handshake": 183,
+    "response": 90,
+    "total": 370
+  }
+}
+JSON
+
+my $metrics := Updown::Metrics.new: from-json $json;
+isa-ok $metrics, Updown::Metrics;
+
+for (
+  "apdex", 0.999,
+) -> $method, $value {
+    is-deeply $metrics."$method"(), $value, "is $method ok";
+}
+
+my $requests := $metrics.requests;
+isa-ok $requests, Updown::Metrics::Requests;
+
+for (
+  "samples",   87441,
+  "failures",  2,
+  "satisfied", 87357,
+  "tolerated", 77,
+) -> $method, $value {
+    is-deeply $requests."$method"(), $value, "is $method ok on requests";
+}
+
+my $by_response_time := $requests.by_response_time;
+isa-ok $by_response_time, Updown::Metrics::Requests::ByResponseTime;
+
+for (
+  "under125", 70521,
+  "under250", 71126,
+  "under500", 87357,
+  "under1000", 87422,
+  "under2000", 87434,
+  "under4000", 87438,
+) -> $method, $value {
+    is-deeply $by_response_time."$method"(), $value,
+      "is $method ok on by_response_time";
+}
+
+my $timings := $metrics.timings;
+isa-ok $timings, Updown::Metrics::Timings;
+
+for (
+  "redirect",   0,
+  "namelookup", 9,
+  "connection", 88,
+  "handshake",  183,
+  "response",   90,
+  "total",      370,
+) -> $method, $value {
+    is-deeply $timings."$method"(), $value, "is $method ok on timings";
+}
+
+# vim: expandtab shiftwidth=4

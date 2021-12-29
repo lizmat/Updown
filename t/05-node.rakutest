@@ -1,0 +1,34 @@
+use Test;
+use JSON::Fast;
+use Updown;
+
+plan 8;
+
+my $json := q:to/JSON/;
+{
+  "ip": "45.76.104.117",
+  "ip6": "2001:19f0:7001:45a::1",
+  "city": "Tokyo",
+  "country": "Japan",
+  "country_code": "jp",
+  "lat": 35.5833,
+  "lng": 139.7483
+}
+JSON
+
+my $node := Updown::Node.new: from-json $json;
+isa-ok $node, Updown::Node;
+
+for (
+  "ip",           "45.76.104.117",
+  "ip6",          "2001:19f0:7001:45a::1",
+  "city",         "Tokyo",
+  "country",      "Japan",
+  "country_code", "jp",
+  "lat",          35.5833,
+  "lng",          139.7483,
+) -> $method, $value {
+    is-deeply $node."$method"(), $value, "is $method ok";
+}
+
+# vim: expandtab shiftwidth=4
