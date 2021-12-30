@@ -33,6 +33,11 @@ The [Updown API](https://updown.io/api) is basically followed to the letter, wit
 
 To be consistent with the names used in the API, all identifiers use underscores (snake_case) in their names, rather then hyphens (kebab-case).
 
+CLI
+===
+
+This distribution also installs an `updown` command line interface. It (implicitely) takes an `--api-key` parameter (or if none specified, the one in the `UPDOWN_API_KEY` environment). It shows the status of all of the checks associated with that API key, and some more information about a check if a website is down.
+
 MAIN CLASSES
 ============
 
@@ -59,29 +64,21 @@ Any API key (implicitely) specified will be added to the headers of the `client`
 
 The following methods are available on the `Updown` object:
 
-#### checks
+#### check
 
-Returns a `Hash` with `Updown::Check` objects, keyed to their "check_id". Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
+Return the `Updown::Check` object associated with the given "check_id". Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
 
 #### check_ids
 
 Returns a list of "check_id"s of the `Updown::Check`s that are being performed for the user associated with the given API key. Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
 
-#### check
+#### checks
 
-Return the `Updown::Check` object associated with the given "check_id". Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
+Returns a `Hash` with `Updown::Check` objects, keyed to their "check_id". Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
 
 #### downtimes
 
 Returns a list of up to 100 `Node::Downtime` objects for the given "check_id". Takes an optional `:page` argument to indicate the "page": defaults to `1`.
-
-#### overall_metrics
-
-Returns a `Updown::Metric` object for the given "check_id". Optionally takes two named arguments.
-
-`:from`, a `DateTime` object indicating the **start** of the period for which to provide overall metrics. Defaults to `DateTime.now.earlier(:1month)`.
-
-`:to`, a `DateTime` object indicating the **end** of the period for which to provide overal metrics. Defaults to `DateTime.now`.
 
 #### hourly_metrics
 
@@ -90,6 +87,14 @@ Returns an object `Hash` of `Updown::Metrics` objects for the given "check_id" a
 `:from`, a `DateTime` object indicating the **start** of the period for which to provide overall metrics. Defaults to `DateTime.now.earlier(:1month)`.
 
 `:to`, a `DateTime` object indicating the **end** of the period for which to provide overal metrics. Defaults to `DateTime.now`.
+
+#### node
+
+Return the `Updown::Node` object associated with the given "node_id". Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
+
+#### node_ids
+
+Returns a list of "node_id"s of the monitoring servers of the `Updown.io` network. Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
 
 #### node_metrics
 
@@ -103,14 +108,6 @@ Returns a `Hash` of `Updown::Metrics` objects for the given "check_id" about ove
 
 Returns a `Hash` with `Updown::Node` objects, keyed to their "node_id". Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
 
-#### node_ids
-
-Returns a list of "node_id"s of the monitoring servers of the `Updown.io` network. Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
-
-#### node
-
-Return the `Updown::Node` object associated with the given "node_id". Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
-
 #### ipv4-nodes
 
 Returns a list of strings with the IPv4 numbers of the nodes in the `Updown.io` network that are executing the monitoring checks. Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
@@ -118,6 +115,14 @@ Returns a list of strings with the IPv4 numbers of the nodes in the `Updown.io` 
 #### ipv6-nodes
 
 Returns a list of strings with the IPv6 numbers of the nodes in the `Updown.io` network that are executing the monitoring checks. Takes an optional named boolean argument `:update` to indicate that the information should be refreshed if it was already obtained before.
+
+#### overall_metrics
+
+Returns a `Updown::Metric` object for the given "check_id". Optionally takes two named arguments.
+
+`:from`, a `DateTime` object indicating the **start** of the period for which to provide overall metrics. Defaults to `DateTime.now.earlier(:1month)`.
+
+`:to`, a `DateTime` object indicating the **end** of the period for which to provide overal metrics. Defaults to `DateTime.now`.
 
 Updown::Event
 -------------
@@ -144,10 +149,6 @@ Updown::Check
 
 An object containing the configuration of the monitoring that the `Updown.io` network does for a given website.
 
-### disabled_locations
-
-An array of monitoring locations that have been disabled, indicated by `node_id`.
-
 ### alias
 
 A string that describes the check, usually a human readable name of the website being monitored.
@@ -159,6 +160,10 @@ A rational number indicating the [APDEX](https://updown.uservoice.com/knowledgeb
 ### custom_headers
 
 A hash of custom headers that will be sent to the monitored website.
+
+### disabled_locations
+
+An array of monitoring locations that have been disabled, indicated by `node_id`.
 
 ### down
 
@@ -219,6 +224,10 @@ An `Updown::Check::SSL` object, indicating SSL certificate status of the monitor
 ### string_match
 
 A string that should occur in the first 1MB of the body returned by the monitored website. An empty string indicates no content checking is done.
+
+#### title
+
+Returns a string consisting of either the `.alias`, or the `.url` if there is no alias specified.
 
 ### token
 

@@ -33,7 +33,7 @@ class Updown::Check does Hash2Class[
   uptime                => Rat,
   url                   => Str,
 ] {
-    method mute_until() {
+    method mute_until(Updown::Check:D:) {
         with $!data<mute_until> {
             if try .DateTime -> $DateTime {
                 $DateTime
@@ -46,7 +46,7 @@ class Updown::Check does Hash2Class[
             Any
         }
     }
-    method down_since() {
+    method down_since(Updown::Check:D:) {
         with $!data<down_since> {
             .DateTime
         }
@@ -54,6 +54,8 @@ class Updown::Check does Hash2Class[
             Any
         }
     }
+
+    method title(Updown::Check:D:) { self.alias || self.url }
 }
 
 class Updown::Downtime does Hash2Class[
@@ -62,7 +64,7 @@ class Updown::Downtime does Hash2Class[
   partial    => Bool,
   started_at => DateTime(Str),
 ] {
-    method duration() {
+    method duration(Updown::Downtime:D:) {
         with $!data<duration> {
             .Int
         }
@@ -70,7 +72,7 @@ class Updown::Downtime does Hash2Class[
             Any
         }
     }
-    method ended_at() {
+    method ended_at(Updown::Downtime:D:) {
         with $!data<ended_at> {
             .DateTime
         }
@@ -137,14 +139,14 @@ class Updown::Event does Hash2Class[
 #-------------------------------------------------------------------------------
 # Updown
 
-class Updown:ver<0.0.1>:auth<zef:lizmat> {
+class Updown:ver<0.0.2>:auth<zef:lizmat> {
     has Cro::HTTP::Client $.client    is built(:bind);
     has Updown::Check     %!checks;
     has Updown::Node      %!nodes;
 
     my $default-client;
     
-    method TWEAK(:$api-key) {
+    submethod TWEAK(:$api-key) {
         without $!client {
             $default-client := Cro::HTTP::Client.new(
               base-uri => "https://updown.io/api/",
@@ -183,13 +185,21 @@ class Updown:ver<0.0.1>:auth<zef:lizmat> {
         }
     }
 
-    method checks(:$update) { $update || !%!checks ?? self!checks !! %!checks }
-    method check_ids(:$update) { self.checks(:$update).keys }
+    method checks(Updown:D: :$update) {
+        $update || !%!checks ?? self!checks !! %!checks
+    }
+    method check_ids(Updown:D: :$update) {
+        self.checks(:$update).keys
+    }
 
-    method nodes(:$update) { $update || !%!nodes ?? self!nodes !! %!nodes }
-    method node_ids(:$update) { self.nodes(:$update).keys }
+    method nodes(Updown:D: :$update) {
+        $update || !%!nodes ?? self!nodes !! %!nodes
+    }
+    method node_ids(Updown:D: :$update) {
+        self.nodes(:$update).keys
+    }
 
-    method check($check_id, :$update) {
+    method check(Updown:D: $check_id, :$update) {
         $update || !%!checks
           ?? %!checks
             ?? self!check($check_id)
@@ -197,19 +207,19 @@ class Updown:ver<0.0.1>:auth<zef:lizmat> {
           !! %!checks{$check_id}
     }
 
-    method node($node_id, :$update) {
+    method node(Updown:D: $node_id, :$update) {
         ($update || !%!nodes ?? self!nodes !! %!nodes){$node_id}
     }
 
-    method ipv4-nodes(:$update) {
+    method ipv4-nodes(Updown:D: :$update) {
         self.nodes(:$update).values.map: *.ip
     }
 
-    method ipv6-nodes(:$update) {
+    method ipv6-nodes(Updown:D: :$update) {
         self.nodes(:$update).values.map: *.ip6
     }
 
-    method downtimes($check_id, :$page = 1 --> List) {
+    method downtimes(Updown:D: $check_id, :$page = 1 --> List) {
         my $resp := await $!client.get: "checks/$check_id/downtimes",
           query => %(:$page);
         (await $resp.body).map({
@@ -217,7 +227,7 @@ class Updown:ver<0.0.1>:auth<zef:lizmat> {
         }).List
     }
 
-    method overall_metrics(
+    method overall_metrics(Updown:D:
       Str:D         $check_id,
       DateTime     :$from,
       DateTime     :$to,
@@ -228,7 +238,7 @@ class Updown:ver<0.0.1>:auth<zef:lizmat> {
         Updown::Metrics.new(await $resp.body)
     }
 
-    method hourly_metrics(
+    method hourly_metrics(Updown:D:
       Str:D         $check_id,
       DateTime     :$from,
       DateTime     :$to,
@@ -241,7 +251,7 @@ class Updown:ver<0.0.1>:auth<zef:lizmat> {
         }
     }
 
-    method node_metrics(
+    method node_metrics(Updown:D:
       Str:D         $check_id,
       DateTime     :$from,
       DateTime     :$to,
@@ -255,7 +265,7 @@ class Updown:ver<0.0.1>:auth<zef:lizmat> {
         }
     }
 
-    method webhooks(--> List) {
+    method webhooks(Updown:D: --> List) {
         my $resp := await $!client.get("webhooks");
         (await $resp.body).map({ Updown::Webhook.new($_) }).List
     }

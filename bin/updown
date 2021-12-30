@@ -1,0 +1,41 @@
+use Updown:ver<0.0.2>:auth<zef:lizmat>;
+
+unit sub MAIN(:$api-key);
+
+sub divider() {
+    say "================================================";
+}
+
+sub duration-human(Int() $duration) {
+    "$duration seconds";
+}
+
+say "Updown.io Checker v{ Updown.^ver }";
+divider;
+my $ud = Updown.new(:$api-key);
+
+my @problems;
+for $ud.checks.values.sort({ .alias || .url }) {
+    print .down ?? "❌ " !! "  ";
+    if .uptime == 100 {
+        print "       ";
+    }
+    else {
+        @problems.push: $_;
+        printf "%4.1f%% ", .uptime;
+    }
+    say .alias || .url;
+}
+
+if @problems {
+    divider;
+    for @problems -> $check {
+        say "❌ $check.title()";
+        for $ud.downtimes($check.token).head(5) {
+            say "$_.started_at() (&duration-human(DateTime.now - .started_at) ago)";
+            say "   URL: $check.url()";
+            say " Error: $_.error() { "(partial)" if .partial }";
+        }
+    }
+}
+divider;

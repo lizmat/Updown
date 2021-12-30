@@ -37,6 +37,14 @@ with a little caching and some minor functional sugar added.
 To be consistent with the names used in the API, all identifiers use
 underscores (snake_case) in their names, rather then hyphens (kebab-case).
 
+=head1 CLI
+
+This distribution also installs an C<updown> command line interface.  It
+(implicitely) takes an C<--api-key> parameter (or if none specified, the
+one in the C<UPDOWN_API_KEY> environment).  It shows the status of all of
+the checks associated with that API key, and some more information about
+a check if a website is down.
+
 =head1 MAIN CLASSES
 
 =head2 Updown
@@ -65,9 +73,9 @@ C<client> object used to facilitate authentication.
 
 The following methods are available on the C<Updown> object:
 
-=head4 checks
+=head4 check
 
-Returns a C<Hash> with C<Updown::Check> objects, keyed to their "check_id".
+Return the C<Updown::Check> object associated with the given "check_id".
 Takes an optional named boolean argument C<:update> to indicate that
 the information should be refreshed if it was already obtained before.
 
@@ -78,9 +86,9 @@ performed for the user associated with the given API key.  Takes an
 optional named boolean argument C<:update> to indicate that the information
 should be refreshed if it was already obtained before.
 
-=head4 check
+=head4 checks
 
-Return the C<Updown::Check> object associated with the given "check_id".
+Returns a C<Hash> with C<Updown::Check> objects, keyed to their "check_id".
 Takes an optional named boolean argument C<:update> to indicate that
 the information should be refreshed if it was already obtained before.
 
@@ -88,17 +96,6 @@ the information should be refreshed if it was already obtained before.
 
 Returns a list of up to 100 C<Node::Downtime> objects for the given "check_id".
 Takes an optional C<:page> argument to indicate the "page": defaults to C<1>.
-
-=head4 overall_metrics
-
-Returns a C<Updown::Metric> object for the given "check_id".  Optionally
-takes two named arguments.
-
-C<:from>, a C<DateTime> object indicating the B<start> of the period for
-which to provide overall metrics.  Defaults to C<DateTime.now.earlier(:1month)>.
-
-C<:to>, a C<DateTime> object indicating the B<end> of the period for which
-to provide overal metrics.  Defaults to C<DateTime.now>.
 
 =head4 hourly_metrics
 
@@ -111,6 +108,18 @@ which to provide overall metrics.  Defaults to C<DateTime.now.earlier(:1month)>.
 
 C<:to>, a C<DateTime> object indicating the B<end> of the period for which
 to provide overal metrics.  Defaults to C<DateTime.now>.
+
+=head4 node
+
+Return the C<Updown::Node> object associated with the given "node_id".
+Takes an optional named boolean argument C<:update> to indicate that
+the information should be refreshed if it was already obtained before.
+
+=head4 node_ids
+
+Returns a list of "node_id"s of the monitoring servers of the C<Updown.io>
+network.  Takes an optional named boolean argument C<:update> to indicate
+that the information should be refreshed if it was already obtained before.
 
 =head4 node_metrics
 
@@ -130,18 +139,6 @@ Returns a C<Hash> with C<Updown::Node> objects, keyed to their "node_id".
 Takes an optional named boolean argument C<:update> to indicate that
 the information should be refreshed if it was already obtained before.
 
-=head4 node_ids
-
-Returns a list of "node_id"s of the monitoring servers of the C<Updown.io>
-network.  Takes an optional named boolean argument C<:update> to indicate
-that the information should be refreshed if it was already obtained before.
-
-=head4 node
-
-Return the C<Updown::Node> object associated with the given "node_id".
-Takes an optional named boolean argument C<:update> to indicate that
-the information should be refreshed if it was already obtained before.
-
 =head4 ipv4-nodes
 
 Returns a list of strings with the IPv4 numbers of the nodes in the C<Updown.io>
@@ -155,6 +152,17 @@ Returns a list of strings with the IPv6 numbers of the nodes in the C<Updown.io>
 network that are executing the monitoring checks.  Takes an optional named
 boolean argument C<:update> to indicate that the information should be
 refreshed if it was already obtained before.
+
+=head4 overall_metrics
+
+Returns a C<Updown::Metric> object for the given "check_id".  Optionally
+takes two named arguments.
+
+C<:from>, a C<DateTime> object indicating the B<start> of the period for
+which to provide overall metrics.  Defaults to C<DateTime.now.earlier(:1month)>.
+
+C<:to>, a C<DateTime> object indicating the B<end> of the period for which
+to provide overal metrics.  Defaults to C<DateTime.now>.
 
 =head2 Updown::Event
 
@@ -183,11 +191,6 @@ The associated C<Updown::Node> object.
 An object containing the configuration of the monitoring that the C<Updown.io>
 network does for a given website.
 
-=head3 disabled_locations
-
-An array of monitoring locations that have been disabled, indicated by
-C<node_id>.
-
 =head3 alias
 
 A string that describes the check, usually a human readable name of the
@@ -200,6 +203,11 @@ A rational number indicating the L<APDEX|https://updown.uservoice.com/knowledgeb
 =head3 custom_headers
 
 A hash of custom headers that will be sent to the monitored website.
+
+=head3 disabled_locations
+
+An array of monitoring locations that have been disabled, indicated by
+C<node_id>.
 
 =head3 down
 
@@ -269,6 +277,11 @@ monitored website.
 
 A string that should occur in the first 1MB of the body returned by the
 monitored website.  An empty string indicates no content checking is done.
+
+=head4 title
+
+Returns a string consisting of either the C<.alias>, or the C<.url> if there
+is no alias specified.
 
 =head3 token
 
