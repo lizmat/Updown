@@ -407,32 +407,32 @@ to the user's L<APDEX|https://updown.uservoice.com/knowledgebase/articles/915588
 This object is usually returned by the "by_response_time" method of the
 C<Updown::Metrics::Request> object.
 
-=head under125
+=head3 under125
 
 An integer indicating the number of monitoring requests that were processed
 under 125 milliseconds.
 
-=head under250
+=head3 under250
 
 An integer indicating the number of monitoring requests that were processed
 under 250 milliseconds.
 
-=head under500
+=head3 under500
 
 An integer indicating the number of monitoring requests that were processed
 under 500 milliseconds.
 
-=head under1000
+=head3 under1000
 
 An integer indicating the number of monitoring requests that were processed
 under 1 second.
 
-=head under2000
+=head3 under2000
 
 An integer indicating the number of monitoring requests that were processed
 under 2 seconds.
 
-=head under4000
+=head3 under4000
 
 An integer indicating the number of monitoring requests that were processed
 under 4 seconds.
