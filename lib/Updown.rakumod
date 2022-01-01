@@ -139,23 +139,18 @@ class Updown::Event does Hash2Class[
 #-------------------------------------------------------------------------------
 # Updown
 
-class Updown:ver<0.0.2>:auth<zef:lizmat> {
-    has Cro::HTTP::Client $.client    is built(:bind);
+class Updown:ver<0.0.3>:auth<zef:lizmat> {
+    has Cro::HTTP::Client $.client is built(:bind);
     has Updown::Check     %!checks;
     has Updown::Node      %!nodes;
 
-    my $default-client;
-    
     submethod TWEAK(:$api-key) {
-        without $!client {
-            $default-client := Cro::HTTP::Client.new(
-              base-uri => "https://updown.io/api/",
-              headers => (
-                User-agent => "Raku UpDown Agent v" ~ Updown.^ver,
-              ),
-            ) without $default-client;
-            $!client := $default-client;
-        }
+        $!client := Cro::HTTP::Client.new(
+          base-uri => "https://updown.io/api/",
+          headers => (
+            User-agent => "Raku UpDown Agent v" ~ Updown.^ver,
+          ),
+        ) without $!client;
 
         with $api-key // %*ENV<UPDOWN_API_KEY> -> $X-API-KEY {
             $!client.headers.push: (:$X-API-KEY);

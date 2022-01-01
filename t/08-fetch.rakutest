@@ -1,0 +1,140 @@
+use Test;
+use Updown;
+
+my constant $api-key = "ro-9lna98rv4cv27xy9ewwo";
+BEGIN %*ENV<UPDOWN_API_KEY>:delete;
+
+my @ud = Updown.new(:$api-key);    # no env, explicit key
+
+%*ENV<UPDOWN_API_KEY> = $api-key;
+@ud.push: Updown.new;              # env, no explicit key
+
+%*ENV<UPDOWN_API_KEY> = "foobar";
+#@ud.push: Updown.new(:$api-key);   # env with wrong key, explicit key
+
+plan @ud * 104;
+
+sub test-metrics($metrics) {
+    isa-ok $metrics, Updown::Metrics;
+    for <
+      apdex    Rat
+      requests Updown::Metrics::Requests
+      timings  Updown::Metrics::Timings
+    > -> $method, $type {
+        ok $metrics."$method"() ~~ ::($type), "does $method return a $type";
+    }
+
+    my $requests := $metrics.requests;
+    isa-ok $requests, Updown::Metrics::Requests;
+    for <
+      by_response_time Updown::Metrics::Requests::ByResponseTime
+      failures         Int
+      samples          Int
+      satisfied        Int
+      tolerated        Int
+    > -> $method, $type {
+        ok $requests."$method"() ~~ ::($type), "does $method return a $type";
+    }
+
+    my $brt := $requests.by_response_time;
+    isa-ok $brt, Updown::Metrics::Requests::ByResponseTime;
+    for <
+      under125  Int
+      under250  Int
+      under500  Int
+      under1000 Int
+      under2000 Int
+      under4000 Int
+    > -> $method, $type {
+        ok $brt."$method"() ~~ ::($type), "does $method return a $type";
+    }
+
+    my $timings := $metrics.timings;
+    isa-ok $timings, Updown::Metrics::Timings;
+    for <
+      connection Int
+      handshake  Int
+      namelookup Int
+      redirect   Int
+      response   Int
+      total      Int
+    > -> $method, $type {
+        ok $timings."$method"() ~~ ::($type), "does $method return a $type";
+    }
+}
+
+sub test($ud, $sleep) is test-assertion {
+    my %checks   := $ud.checks;
+    my @check_ids = $ud.check_ids.sort;
+    is %checks.keys.sort, @check_ids, 'did we get all check ids';
+    
+    my $check_id = @check_ids[0];
+    my $check := %checks{$check_id};
+    isa-ok $check, Updown::Check;
+    for <
+      disabled_locations List
+      alias              Str
+      apdex_t            Rat
+      custom_headers     Hash
+      down               Bool
+      enabled            Bool
+      http_verb          Str
+      last_check_at      DateTime
+      last_status        Int
+      next_check_at      DateTime
+      period             Int
+      published          Bool
+      ssl                Updown::Check::SSL
+      string_match       Str
+      token              Str
+      uptime             Rat
+      url                Str
+    > -> $method, $type {
+        ok $check."$method"() ~~ ::($type), "does $method return a $type";
+    }
+
+    test-metrics($ud.overall_metrics($check_id));
+
+    my %hourly_metrics := $ud.hourly_metrics($check_id);
+    test-metrics(%hourly_metrics.values.head);
+
+    my %node_metrics := $ud.node_metrics($check_id);
+    test-metrics(%node_metrics.values.head);
+
+    my @downtimes := $ud.downtimes($check_id);
+    my $downtime   = @downtimes[0];
+    isa-ok $downtime, Updown::Downtime;
+    for <
+      partial    Bool
+      started_at DateTime
+    > -> $method, $type {
+        ok $downtime."$method"() ~~ ::($type), "does $method return a $type";
+    }
+
+    my %nodes   := $ud.nodes;
+    my @node_ids = $ud.node_ids.sort;
+    is %nodes.keys.sort, @node_ids, 'did we get all node ids';
+    
+    my $node_id = @node_ids[0];
+    my $node := %nodes{$node_id};
+    isa-ok $node, Updown::Node;
+    for <
+      city         Str
+      country      Str
+      country_code Str
+      ip           Str
+      ip6          Str
+      lat          Rat
+      lng          Rat
+      node_id      Str
+    > -> $method, $type {
+        ok $node."$method"() ~~ ::($type), "does $method return a $type";
+    }
+
+
+    sleep 3 if $sleep;
+}
+
+test(@ud.shift, +@ud) while @ud;
+
+# vim: expandtab shiftwidth=4
