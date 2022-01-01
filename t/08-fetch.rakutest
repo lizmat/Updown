@@ -7,7 +7,7 @@ BEGIN %*ENV<UPDOWN_API_KEY>:delete;
 my @ud = Updown.new(:$api-key);    # no env, explicit key
 
 %*ENV<UPDOWN_API_KEY> = $api-key;
-@ud.push: Updown.new;              # env, no explicit key
+#@ud.push: Updown.new;              # env, no explicit key
 
 %*ENV<UPDOWN_API_KEY> = "foobar";
 #@ud.push: Updown.new(:$api-key);   # env with wrong key, explicit key
