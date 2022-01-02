@@ -1,7 +1,7 @@
 use Test;
 use Updown;
 
-my constant $api-key = "ro-9lna98rv4cv27xy9ewwo";
+my constant $api-key = "ro-UME2wrpSpbNGbSuZMRH1";
 BEGIN %*ENV<UPDOWN_API_KEY>:delete;
 
 my @ud = Updown.new(:$api-key);    # no env, explicit key
@@ -101,14 +101,19 @@ sub test($ud, $sleep) is test-assertion {
     my %node_metrics := $ud.node_metrics($check_id);
     test-metrics(%node_metrics.values.head);
 
-    my @downtimes := $ud.downtimes($check_id);
-    my $downtime   = @downtimes[0];
-    isa-ok $downtime, Updown::Downtime;
-    for <
-      partial    Bool
-      started_at DateTime
-    > -> $method, $type {
-        ok $downtime."$method"() ~~ ::($type), "does $method return a $type";
+    if $ud.downtimes($check_id) -> @downtimes {
+        my $downtime   = @downtimes[0];
+        isa-ok $downtime, Updown::Downtime;
+        for <
+          partial    Bool
+          started_at DateTime
+        > -> $method, $type {
+            ok $downtime."$method"() ~~ ::($type),
+              "does $method return a $type";
+        }
+    }
+    else {
+        pass "no downtimes" for ^3;
     }
 
     my %nodes   := $ud.nodes;
