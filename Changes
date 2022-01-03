@@ -1,8 +1,9 @@
 Revision history for Updown
 
 {{$NEXT}}
+    - Allow for comparators
     - Give each Updown object its *own* default client
-    - Add live tests
+    - Add live tests for author
 
 0.0.2  2021-12-30T20:04:07+01:00
     - Add a Updown::Check.title method, for convenience

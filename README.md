@@ -38,6 +38,20 @@ CLI
 
 This distribution also installs an `updown` command line interface. It (implicitely) takes an `--api-key` parameter (or if none specified, the one in the `UPDOWN_API_KEY` environment). It shows the status of all of the checks associated with that API key, and some more information about a check if a website is down.
 
+COMPARING
+=========
+
+In order to allow you to compare the performance of "your" sites with other, more general sites, the methods accepting a `check_id` can also with one of these named arguments **instead** of a `check_id`:
+
+    :booking     booking.com
+    :duckduckgo  duckduckgo.com
+    :facebook    facebook.com
+    :github      github.com
+    :google      google.com
+    :raku        raku.org
+    :reddit      reddit.com
+    :twitter     twitter.com
+
 MAIN CLASSES
 ============
 
@@ -338,45 +352,27 @@ Updown::Metrics::Requests::ByResponseTime
 
 This object is usually returned by the "by_response_time" method of the `Updown::Metrics::Request` object.
 
-head
-====
-
-under125
+### under125
 
 An integer indicating the number of monitoring requests that were processed under 125 milliseconds.
 
-head
-====
-
-under250
+### under250
 
 An integer indicating the number of monitoring requests that were processed under 250 milliseconds.
 
-head
-====
-
-under500
+### under500
 
 An integer indicating the number of monitoring requests that were processed under 500 milliseconds.
 
-head
-====
-
-under1000
+### under1000
 
 An integer indicating the number of monitoring requests that were processed under 1 second.
 
-head
-====
-
-under2000
+### under2000
 
 An integer indicating the number of monitoring requests that were processed under 2 seconds.
 
-head
-====
-
-under4000
+### under4000
 
 An integer indicating the number of monitoring requests that were processed under 4 seconds.
 

@@ -45,6 +45,21 @@ one in the C<UPDOWN_API_KEY> environment).  It shows the status of all of
 the checks associated with that API key, and some more information about
 a check if a website is down.
 
+=head1 COMPARING
+
+In order to allow you to compare the performance of "your" sites with
+other, more general sites, the methods accepting a C<check_id> can also
+with one of these named arguments **instead** of a C<check_id>:
+
+  :booking     booking.com
+  :duckduckgo  duckduckgo.com
+  :facebook    facebook.com
+  :github      github.com
+  :google      google.com
+  :raku        raku.org
+  :reddit      reddit.com
+  :twitter     twitter.com
+
 =head1 MAIN CLASSES
 
 =head2 Updown
