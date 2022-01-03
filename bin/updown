@@ -16,15 +16,13 @@ my $ud = Updown.new(:$api-key);
 
 my @problems;
 for $ud.checks.values.sort({ .alias || .url }) {
-    print .down ?? "❌ " !! "  ";
-    if .uptime == 100 {
-        print "       ";
-    }
-    else {
+    print .down ?? "❌ " !! "✅ ";
+    print .title;
+    if .uptime < 100 {
         @problems.push: $_;
-        printf "%4.1f%% ", .uptime;
+        printf " (%4.1f%%)", .uptime;
     }
-    say .alias || .url;
+    print "\n";
 }
 
 if @problems {
