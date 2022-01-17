@@ -151,13 +151,14 @@ class Updown::Event does Hash2Class[
 #-------------------------------------------------------------------------------
 # Updown
 
-class Updown:ver<0.0.3>:auth<zef:lizmat> {
+class Updown:ver<0.0.4>:auth<zef:lizmat> {
     has Cro::HTTP::Client $.client  is built(:bind);
-    has Str               $.api-key is built(:bind) = %*ENV<UPDOWN_API_KEY>;
+    has                   $.api-key is built(:bind);
     has Updown::Check     %!checks;
     has Updown::Node      %!nodes;
 
     submethod TWEAK() {
+        $!api-key := %*ENV<UPDOWN_API_KEY>       without $!api-key;
         die "No API key (implicitely) specified" without $!api-key;
 
         $!client := Cro::HTTP::Client.new(

@@ -2,6 +2,9 @@ Revision history for Updown
 
 {{$NEXT}}
 
+0.0.4  2022-01-17T20:00:00+01:00
+    - Fix thinko in updown script
+
 0.0.3  2022-01-03T12:41:22+01:00
     - Allow for comparators
     - Give each Updown object its *own* default client
