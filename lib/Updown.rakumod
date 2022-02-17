@@ -42,7 +42,7 @@ class Updown::Check does Hash2Class[
   ssl                   => Updown::Check::SSL,
   string_match          => Str,
   token                 => Str,
-  uptime                => Rat,
+  uptime                => Rat(),
   url                   => Str,
 ] {
     method mute_until(Updown::Check:D:) {
@@ -151,7 +151,7 @@ class Updown::Event does Hash2Class[
 #-------------------------------------------------------------------------------
 # Updown
 
-class Updown:ver<0.0.4>:auth<zef:lizmat> {
+class Updown:ver<0.0.5>:auth<zef:lizmat> {
     has Cro::HTTP::Client $.client  is built(:bind);
     has                   $.api-key is built(:bind);
     has Updown::Check     %!checks;

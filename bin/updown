@@ -1,4 +1,4 @@
-use Updown:ver<0.0.4>:auth<zef:lizmat>;
+use Updown:ver<0.0.5>:auth<zef:lizmat>;
 
 unit sub MAIN(:$api-key);
 
@@ -28,7 +28,7 @@ for $ud.checks.values.sort({ .alias || .url }) {
 if @problems {
     divider;
     for @problems -> $check {
-        say "❌ $check.title()";
+        say "\n❌ $check.title()";
         for $ud.downtimes($check.token).head(3) {
             say "$_.started_at() {
                 "for &duration-human($_) " with .duration

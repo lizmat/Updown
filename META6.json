@@ -6,6 +6,8 @@
   "build-depends": [
   ],
   "depends": [
+    "IO::Socket::Async::SSL:ver<0.7.10>",
+    "HTTP::HPACK:ver<0.9.3>",
     "Cro::HTTP::Client:ver<0.8.7>",
     "Hash2Class:ver<0.1.5>:auth<zef:lizmat>"
   ],
@@ -26,7 +28,7 @@
     "UPDOWN"
   ],
   "test-depends": [
-    "JSON::Fast:ver<0.16>"
+    "JSON::Fast"
   ],
-  "version": "0.0.4"
+  "version": "0.0.5"
 }

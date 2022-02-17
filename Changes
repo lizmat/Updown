@@ -2,6 +2,14 @@ Revision history for Updown
 
 {{$NEXT}}
 
+0.0.5  2022-02-17T18:34:11+01:00
+    - Added specific dependencies to HTTP::HPACK and
+      IO::Socket::Async::SSL so that Updown works with
+      Rakudo 2022.02 and Cro 0.8.7.  Once a more recent
+      Cro has become available, these dependencies can go.
+    - Changed "uptime" field to coerce to Rat, when it is
+      100, it comes back as an Int
+
 0.0.4  2022-01-17T20:00:00+01:00
     - Fix thinko in updown script
 
