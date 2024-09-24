@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/lizmat/Updown/actions/workflows/linux.yml/badge.svg)](https://github.com/lizmat/Updown/actions) [![Actions Status](https://github.com/lizmat/Updown/actions/workflows/macos.yml/badge.svg)](https://github.com/lizmat/Updown/actions) [![Actions Status](https://github.com/lizmat/Updown/actions/workflows/windows.yml/badge.svg)](https://github.com/lizmat/Updown/actions)
+[![Actions Status](https://github.com/lizmat/Updown/actions/workflows/linux.yml/badge.svg)](https://github.com/lizmat/Updown/actions) [![Actions Status](https://github.com/lizmat/Updown/actions/workflows/macos.yml/badge.svg)](https://github.com/lizmat/Updown/actions)
 
 NAME
 ====

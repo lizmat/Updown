@@ -1,6 +1,8 @@
 Revision history for Updown
 
 {{$NEXT}}
+
+0.0.6  2024-09-24T15:29:52+02:00
     - Remove support for :reddit / :twitter, they don't work anymore
     - Up dependecy on Hash2Class and Cro::HTTP::Client
     - Add dependency on META::Version to get version reliably
