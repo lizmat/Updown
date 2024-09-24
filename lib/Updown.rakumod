@@ -1,5 +1,6 @@
-use Hash2Class:ver<0.1.5>:auth<zef:lizmat>;
-use Cro::HTTP::Client:ver<0.8.7>;
+use META::constants:ver<0.0.4>:auth<zef:lizmat> $?DISTRIBUTION;
+use Hash2Class:ver<0.1.6>:auth<zef:lizmat>;
+use Cro::HTTP::Client:ver<0.8.9.1>;
 
 my constant $compare-api-key = 'ro-UME2wrpSpbNGbSuZMRH1';
 my constant %compare = <
@@ -9,8 +10,6 @@ my constant %compare = <
   github      g5ue
   google      ujys
   raku        0211
-  reddit      ztqp
-  twitter     tpnc
 >;
 
 #-------------------------------------------------------------------------------
@@ -151,7 +150,7 @@ class Updown::Event does Hash2Class[
 #-------------------------------------------------------------------------------
 # Updown
 
-class Updown:ver<0.0.5>:auth<zef:lizmat> {
+class Updown {
     has Cro::HTTP::Client $.client  is built(:bind);
     has                   $.api-key is built(:bind);
     has Updown::Check     %!checks;
@@ -164,7 +163,7 @@ class Updown:ver<0.0.5>:auth<zef:lizmat> {
         $!client := Cro::HTTP::Client.new(
           base-uri => "https://updown.io/api/",
           headers => (
-            User-agent => "Raku UpDown Agent v" ~ Updown.^ver,
+            User-agent => ("Raku UpDown Agent v" ~ VERSION),
           ),
         ) without $!client;
     }

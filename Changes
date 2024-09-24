@@ -1,6 +1,12 @@
 Revision history for Updown
 
 {{$NEXT}}
+    - Remove support for :reddit / :twitter, they don't work anymore
+    - Up dependecy on Hash2Class and Cro::HTTP::Client
+    - Add dependency on META::Version to get version reliably
+    - Add CI badge for each OS
+    - Add sponsor button and link
+    - Update copyright year
 
 0.0.5  2022-02-17T18:34:11+01:00
     - Added specific dependencies to HTTP::HPACK and

@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/lizmat/Updown/workflows/test/badge.svg)](https://github.com/lizmat/Updown/actions)
+[![Actions Status](https://github.com/lizmat/Updown/actions/workflows/linux.yml/badge.svg)](https://github.com/lizmat/Updown/actions) [![Actions Status](https://github.com/lizmat/Updown/actions/workflows/macos.yml/badge.svg)](https://github.com/lizmat/Updown/actions) [![Actions Status](https://github.com/lizmat/Updown/actions/workflows/windows.yml/badge.svg)](https://github.com/lizmat/Updown/actions)
 
 NAME
 ====
@@ -49,8 +49,6 @@ In order to allow you to compare the performance of "your" sites with other, mor
     :github      github.com
     :google      google.com
     :raku        raku.org
-    :reddit      reddit.com
-    :twitter     twitter.com
 
 MAIN CLASSES
 ============
@@ -462,10 +460,12 @@ Elizabeth Mattijsen <liz@raku.rocks>
 
 Source can be located at: https://github.com/lizmat/Updown . Comments and Pull Requests are welcome.
 
+If you like this module, or what I'm doing more generally, committing to a [small sponsorship](https://github.com/sponsors/lizmat/) would mean a great deal to me!
+
 COPYRIGHT AND LICENSE
 =====================
 
-Copyright 2021 Elizabeth Mattijsen
+Copyright 2021, 2022, 2024 Elizabeth Mattijsen
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 

@@ -39,3 +39,5 @@ if @problems {
     }
 }
 divider;
+
+# vim: expandtab shiftwidth=4

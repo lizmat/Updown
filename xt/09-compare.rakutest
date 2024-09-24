@@ -2,7 +2,7 @@ use Test;
 use Updown;
 
 my $ud := Updown.new(:api-key<foobar>);
-my @compares = <booking duckduckgo facebook github google raku reddit twitter>;
+my @compares = <booking duckduckgo facebook github google raku>;
 
 plan @compares * 93;
 
