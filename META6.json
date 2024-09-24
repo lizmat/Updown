@@ -9,7 +9,8 @@
     "IO::Socket::Async::SSL:ver<0.7.10>",
     "HTTP::HPACK:ver<0.9.3>",
     "Cro::HTTP::Client:ver<0.8.9.1>",
-    "Hash2Class:ver<0.1.6>:auth<zef:lizmat>"
+    "Hash2Class:ver<0.1.6>:auth<zef:lizmat>",
+    "META::constants:ver<0.0.4>:auth<zef:lizmat>"
   ],
   "description": "provide basic API to Updown.io",
   "license": "Artistic-2.0",
