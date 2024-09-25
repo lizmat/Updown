@@ -1,6 +1,8 @@
 Revision history for Updown
 
 {{$NEXT}}
+
+0.0.8  2024-09-25T15:58:54+02:00
     - Add dependency on META::verauthapi, remove META::constants
     - Make sure all classes have proper ^ver, ^auth and ^api setting
 
