@@ -1,6 +1,8 @@
 Revision history for Updown
 
 {{$NEXT}}
+    - Add dependency on META::verauthapi, remove META::constants
+    - Make sure all classes have proper ^ver, ^auth and ^api setting
 
 0.0.7  2024-09-24T16:40:50+02:00
     - Fix META snafu

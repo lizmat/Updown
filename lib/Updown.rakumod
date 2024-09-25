@@ -1,4 +1,3 @@
-use META::constants:ver<0.0.4>:auth<zef:lizmat> $?DISTRIBUTION;
 use Hash2Class:ver<0.1.6>:auth<zef:lizmat>;
 use Cro::HTTP::Client:ver<0.8.9.1>;
 
@@ -163,7 +162,7 @@ class Updown {
         $!client := Cro::HTTP::Client.new(
           base-uri => "https://updown.io/api/",
           headers => (
-            User-agent => ("Raku UpDown Agent v" ~ VERSION),
+            User-agent => ("Raku UpDown Agent v" ~ Updown.^ver),
           ),
         ) without $!client;
     }
@@ -375,5 +374,21 @@ class Updown {
         self.fetch("webhooks").map({ Updown::Webhook.new($_) }).List
     }
 }
+
+#- set :ver :auth :api ---------------------------------------------------------
+
+use META::verauthapi:ver<0.0.1>:auth<zef:lizmat> $?DISTRIBUTION,
+  Updown,
+  Updown::Check,
+  Updown::Check::SSL,
+  Updown::Downtime,
+  Updown::Event,
+  Updown::Metrics,
+  Updown::Metrics::Requests,
+  Updown::Metrics::Requests::ByResponseTime,
+  Updown::Metrics::Timings,
+  Updown::Node,
+  Updown::Webhook,
+;
 
 # vim: expandtab shiftwidth=4
