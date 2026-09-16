@@ -3,6 +3,8 @@
   "authors": [
     "Elizabeth Mattijsen"
   ],
+  "build-depends": [
+  ],
   "depends": {
     "runtime": {
       "requires": [
@@ -21,10 +23,13 @@
     "Updown": "lib/Updown.rakumod"
   },
   "raku": "6.d",
+  "resources": [
+  ],
+  "source-url": "https://codeberg.org/lizmat/Updown.git",
   "support": {
-    "bugtracker": "https://github.com/lizmat/Updown/issues",
+    "bugtracker": "https://codeberg.org/lizmat/Updown/issues",
     "email": "liz@raku.rocks",
-    "source": "https://github.com/lizmat/Updown.git"
+    "source": "https://codeberg.org/lizmat/Updown.git"
   },
   "tags": [
     "API",
@@ -32,5 +37,7 @@
     "MONITORING",
     "UPDOWN"
   ],
-  "version": "0.0.8"
+  "test-depends": [
+  ],
+  "version": "0.0.9"
 }
