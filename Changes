@@ -1,6 +1,9 @@
 Revision history for Updown
 
 {{$NEXT}}
+    - Up dependencies to make it 6.e ready
+    - Modernize META
+    - Update copyright year
 
 0.0.8  2024-09-25T15:58:54+02:00
     - Add dependency on META::verauthapi, remove META::constants

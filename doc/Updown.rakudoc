@@ -7,7 +7,6 @@ Updown - provide basic API to Updown.io
 =head1 SYNOPSIS
 
 =begin code :lang<raku>
-
 use Updown;
 
 my $ud = Updown.new;  # assume API key in UPDOWN_API_KEY
@@ -19,7 +18,6 @@ for $ud.checks -> (:key($check-id), :value($check)) {
 }
 
 my $event = Updown::Event(%hash);  # inside a webhook
-
 =end code
 
 =head1 DESCRIPTION
@@ -51,12 +49,13 @@ In order to allow you to compare the performance of "your" sites with
 other, more general sites, the methods accepting a C<check_id> can also
 with one of these named arguments **instead** of a C<check_id>:
 
-  :booking     booking.com
-  :duckduckgo  duckduckgo.com
-  :facebook    facebook.com
-  :github      github.com
-  :google      google.com
-  :raku        raku.org
+=table
+:booking     booking.com
+:duckduckgo  duckduckgo.com
+:facebook    facebook.com
+:github      github.com
+:google      google.com
+:raku        raku.org
 
 =head1 MAIN CLASSES
 
@@ -549,7 +548,7 @@ deal to me!
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2021, 2022, 2024, 2025 Elizabeth Mattijsen
+Copyright 2021, 2022, 2024, 2025, 2026 Elizabeth Mattijsen
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 

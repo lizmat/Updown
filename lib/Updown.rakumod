@@ -1,5 +1,5 @@
-use Hash2Class:ver<0.1.6>:auth<zef:lizmat>;
-use Cro::HTTP::Client:ver<0.8.9.1>;
+use Hash2Class:ver<0.1.7+>:auth<zef:lizmat>;
+use Cro::HTTP::Client:ver<0.8.13+>;
 
 my constant $compare-api-key = 'ro-UME2wrpSpbNGbSuZMRH1';
 my constant %compare = <
@@ -377,7 +377,7 @@ class Updown {
 
 #- set :ver :auth :api ---------------------------------------------------------
 
-use META::verauthapi:ver<0.0.1>:auth<zef:lizmat> $?DISTRIBUTION,
+use META::verauthapi:ver<0.0.1+>:auth<zef:lizmat> $?DISTRIBUTION,
   Updown,
   Updown::Check,
   Updown::Check::SSL,
